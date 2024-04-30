@@ -11,7 +11,7 @@ import lombok.Data;
  * 
  * @TableName lock
  */
-@TableName(value ="lock")
+@TableName(value ="block")
 @Data
 public class Lock implements Serializable {
     /**

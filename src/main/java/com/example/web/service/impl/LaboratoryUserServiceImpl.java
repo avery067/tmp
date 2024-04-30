@@ -40,7 +40,7 @@ public class LaboratoryUserServiceImpl extends ServiceImpl<LaboratoryUserMapper,
         boolean flag = false;
         //判断当前时间是否超出预约时间3分钟
         if(new Date().getTime() - laboratoryUser.getCreateTime().getTime() > 3*60*1000){
-            Lock lock = lockService.getOne(new LambdaQueryWrapper<Lock>().eq(Lock::getUserId,userId));
+            Lock lock = lockService.getOne(new LambdaQueryWrapper<Lock>().eq(Lock::getUserId,userId).setEntityClass(Lock.class));
             if(lock==null){
                 lock.setUserId(userId);
                 lock.setNum(0);

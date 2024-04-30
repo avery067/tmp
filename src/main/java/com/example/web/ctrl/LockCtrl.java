@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/lock")
-public class BlockCtrl {
+public class LockCtrl {
     @Autowired
     private LockService lockService;
     @Autowired
@@ -34,7 +34,7 @@ public class BlockCtrl {
         //判断lock.num 大于等于3
         ModelAndView view = new ModelAndView("lock");
         Page<Lock> page = lockService.page(new Page<>(pageNum,pageSize),new LambdaQueryWrapper<Lock>()
-                .ge(Lock::getNum,3));
+                .ge(Lock::getNum,3).setEntityClass(Lock.class));
 
         List<LockVo> vos = new ArrayList<>();
         CommonPageVo vo = new CommonPageVo();
