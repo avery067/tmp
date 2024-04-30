@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室列表</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <table border="1" class="table">
+        <tr>
+            <th>用户名</th>
+            <th>错误次数</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="lock : ${locks.data}">
+            <td th:text="${lock.userName}"></td>
+            <td th:text="${lock.num}"></td>
+            <a th:href="@{/lock/unlock(id=${lock.id})}" th:text="解锁" ></a>
+        </tr>
+    </table>
+
+    <div>
+        <ul class="pagination">
+            <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+            <li><a href="#" class="next" th:onclick="handleNext([[${deviceList.total}]])">下一页</a></li>
+        </ul>
+    </div>
+
+
+</div>
+
+</body>
+</html>

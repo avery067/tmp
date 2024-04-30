@@ -13,11 +13,12 @@
             <result property="sign" column="sign" jdbcType="INTEGER"/>
             <result property="signTime" column="sign_time" jdbcType="TIMESTAMP"/>
             <result property="no" column="no" jdbcType="VARCHAR"/>
+            <result property="signState" column="sign_state" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_id,laboratory_id,
         create_time,state,sign,
-        sign_time,no
+        sign_time,no,sign_state
     </sql>
 </mapper>

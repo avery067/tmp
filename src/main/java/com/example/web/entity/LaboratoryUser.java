@@ -56,6 +56,11 @@ public class LaboratoryUser implements Serializable {
      */
     private String no;
 
+    /**
+     * 超时状态
+     */
+    private Integer signState;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -78,7 +83,8 @@ public class LaboratoryUser implements Serializable {
             && (this.getState() == null ? other.getState() == null : this.getState().equals(other.getState()))
             && (this.getSign() == null ? other.getSign() == null : this.getSign().equals(other.getSign()))
             && (this.getSignTime() == null ? other.getSignTime() == null : this.getSignTime().equals(other.getSignTime()))
-            && (this.getNo() == null ? other.getNo() == null : this.getNo().equals(other.getNo()));
+            && (this.getNo() == null ? other.getNo() == null : this.getNo().equals(other.getNo()))
+            && (this.getSignState() == null ? other.getSignState() == null : this.getSignState().equals(other.getSignState()));
     }
 
     @Override
@@ -93,6 +99,7 @@ public class LaboratoryUser implements Serializable {
         result = prime * result + ((getSign() == null) ? 0 : getSign().hashCode());
         result = prime * result + ((getSignTime() == null) ? 0 : getSignTime().hashCode());
         result = prime * result + ((getNo() == null) ? 0 : getNo().hashCode());
+        result = prime * result + ((getSignState() == null) ? 0 : getSignState().hashCode());
         return result;
     }
 
@@ -110,6 +117,7 @@ public class LaboratoryUser implements Serializable {
         sb.append(", sign=").append(sign);
         sb.append(", signTime=").append(signTime);
         sb.append(", no=").append(no);
+        sb.append(", signState=").append(signState);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
