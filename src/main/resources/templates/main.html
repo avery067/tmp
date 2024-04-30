@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>管理中心</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <div id="chart1" style="width: 600px;height:400px;"></div>
+    <div id="chart2" style="width: 600px;height:400px;"></div>
+</div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function(){
+        $.ajax(
+            {
+                url: '/statis/persons',
+                type: 'GET',
+                success: function (res) {
+                    var chart1 = document.getElementById('chart1');
+                    var myChart1 = echarts.init(chart1);
+                    var data = [];
+                    for (var i = 0; i < res.data.length; i++) {
+                        data.push({
+                            name: res.data[i].name,
+                            value: res.data[i].max
+                        });
+                    }
+                    // 定义图表配置和数据
+                    var option1 = {
+                        title: {
+                            text: '各实验室预约占比图',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left'
+                        },
+                        series: [
+                            {
+                                name: 'Access From',
+                                type: 'pie',
+                                radius: '50%',
+                                data: data,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    // 使用指定的配置项和数据显示图表
+                    myChart1.setOption(option1);
+                }
+            }
+        );
+        $.ajax({
+            url: '/statis/current',
+            type: 'GET',
+            success: function (res) {
+                var chart2 = document.getElementById('chart2');
+                var myChart2 = echarts.init(chart2);
+                var xData = [];
+                var yData = [];
+                for (var i = 0; i < res.data.length; i++) {
+                    xData.push(res.data[i].name);
+                    yData.push(res.data[i].max);
+                }
+                // 定义图表配置和数据
+                var option2=  {
+                    title: {
+                        text: '各实验室剩余容量',
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: xData
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: yData,
+                            type: 'bar'
+                        }
+                    ]
+                };
+
+                // 使用指定的配置项和数据显示图表
+                myChart2.setOption(option2);
+            }
+
+        });
+    });
+
+
+
+
+</script>
+
+<style>
+.main{
+    display: flex;
+}
+</style>
+</html>

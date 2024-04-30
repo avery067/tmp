@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室列表</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <table border="1" class="table">
+        <tr>
+            <th>图片</th>
+            <th>设备名称</th>
+            <th>编号</th>
+            <th>类型</th>
+            <th>用户说明</th>
+            <th>用户名称</th>
+            <th>反馈说明</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="device : ${deviceList.data}">
+            <td>
+                <img th:src="${ 'http://localhost:8080/api/file/view2/'+device.id}" style="width: 100px;height: 100px">
+            </td>
+            <td th:text="${device.name}"></td>
+            <td th:text="${device.no}"></td>
+            <td th:text="${device.type}"></td>
+            <td th:text="${device.remark}"></td>
+            <td th:text="${device.userName}"></td>
+            <td th:text="${device.note}"></td>
+            <td>
+                <a href="#" th:onclick="openModal([[${device}]])" th:inline="text">反馈 </a>
+            </td>
+        </tr>
+    </table>
+
+    <div>
+        <ul class="pagination">
+            <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+            <li><a href="#" class="next" th:onclick="handleNext([[${deviceList.total}]])">下一页</a></li>
+        </ul>
+    </div>
+
+    <!-- 模态框遮罩层 -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+
+    <!-- 模态框内容 -->
+    <div class="modal" id="modal" style="display: none">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2>设备报修反馈</h2>
+        <form
+                action="/device/edit"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <div class="form-item">
+                <input type="hidden" id="id" name="id">
+                <label for="note">反馈说明:</label>
+                <input type="text" id="note" name="note">
+            </div>
+
+            <div class="form-item">
+                <button type="submit">提交</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+</body>
+<script >
+
+    function handleSearch(){
+        var name = document.getElementById("name1").value;
+        window.location.href = "/device/?pageSize=20&pageNum=1&name="+name;
+    }
+    function handlePrev(total) {
+        //获取URL参数中的pageNum
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        // total/20 得到共计多少页
+        if(pageNum>1){
+            window.location.href = "/device/?pageSize=20&pageNum="+(pageNum-1);
+        }else{
+            alert("已经是第一页了")
+        }
+    }
+    function handleNext(total){
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        if(pageNum<total/20){
+            window.location.href = "/device/?pageSize=20&pageNum="+(pageNum+1);
+        }else{
+            alert("已经是最后一页了")
+        }
+    }
+</script>
+<script>
+    // 获取模态框和遮罩层
+    var modal = document.getElementById("modal");
+    var modalOverlay = document.getElementById("modal-overlay");
+
+    // 打开模态框函数
+    function openModal(device) {
+        modal.style.display = "block"; // 显示模态框
+        modalOverlay.style.display = "block"; // 显示遮罩层
+        //填充实验室信息
+        document.getElementById("id").value = device.id;
+        document.getElementById("note").value = device.note;
+    }
+    // 关闭模态框函数
+    function closeModal() {
+        modal.style.display = "none"; // 隐藏模态框
+        modalOverlay.style.display = "none"; // 隐藏遮罩层
+    }
+</script>
+</html>

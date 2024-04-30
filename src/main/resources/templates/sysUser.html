@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>管理员列表</title>
+  <link rel="stylesheet" th:href="@{/css/menu.css}">
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+
+  <div class="search-container">
+    <input type="text" id="name"  placeholder="Search..."> <button th:onclick="handleSearch()">搜索</button><button th:onclick="openModal1()">添加管理员</button>
+  </div>
+  <table border="1" class="table">
+    <tr>
+      <th>用户名</th>
+      <th>密码</th>
+      <th>操作</th>
+    </tr>
+    <tr th:each="user : ${users.records}">
+      <td th:text="${user.sysUserName}"></td>
+      <td th:text="${user.sysPassWord}"></td>
+      <td>
+        <a th:href="@{/sys/user/delete(id=${user.id})}" th:text="删除" ></a>
+        <a href="#" th:onclick="openModal([[${user}]])" th:inline="text"> 修改</a>
+      </td>
+    </tr>
+  </table>
+
+  <div>
+    <ul class="pagination">
+      <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+      <li><a href="#" class="next" th:onclick="handleNext([[${users.total}]])">下一页</a></li>
+    </ul>
+  </div>
+
+
+  <!-- 模态框遮罩层 -->
+  <div class="modal-overlay" id="modal-overlay"></div>
+
+  <!-- 模态框内容 -->
+  <div class="modal" id="modal" style="display: none">
+    <span class="close" th:onclick="closeModal()">×</span>
+    <h2>修改管理员信息</h2>
+    <form
+            action="/sys/user/edit"
+            method="post"
+    >
+      <div class="form-item">
+        <input type="hidden" id="id" name="id">
+        <label for="sysUserName">用户名:</label>
+        <input type="text" id="sysUserName" name="sysUserName">
+      </div>
+      <div class="form-item">
+        <label for="sysPassWord">密码:</label>
+        <input type="password" id="sysPassWord" name="sysPassWord">
+      </div>
+      <div class="form-item">
+        <button type="submit">提交修改</button>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal" id="modal1" style="display: none">
+    <span class="close" th:onclick="closeModal1()">×</span>
+    <h2>添加管理员</h2>
+    <form
+            action="/sys/user/add"
+            method="post"
+    >
+      <div class="form-item">
+        <label for="sysUserName">用户名:</label>
+        <input type="text" name="sysUserName">
+      </div>
+      <div class="form-item">
+        <label for="sysPassWord">密码:</label>
+        <input type="sysPassWord"  name="sysPassWord">
+      </div>
+      <div class="form-item">
+        <button type="submit">提交修改</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+</body>
+<script >
+
+  function handleSearch(){
+    var name = document.getElementById("name").value;
+    window.location.href = "/sys/user/?pageSize=20&pageNum=1&name="+name;
+  }
+  function handlePrev(total) {
+    //获取URL参数中的pageNum
+    var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+    // total/20 得到共计多少页
+    if(pageNum>1){
+      window.location.href = "/sys/user/?pageSize=20&pageNum="+(pageNum-1);
+    }else{
+      alert("已经是第一页了")
+    }
+  }
+  function handleNext(total){
+    var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+    if(pageNum<total/20){
+      window.location.href = "/sys/user/?pageSize=20&pageNum="+(pageNum+1);
+    }else{
+      alert("已经是最后一页了")
+    }
+  }
+</script>
+<script>
+  // 获取模态框和遮罩层
+  var modal = document.getElementById("modal");
+  var modalOverlay = document.getElementById("modal-overlay");
+
+  // 打开模态框函数
+  function openModal(user) {
+    modal.style.display = "block"; // 显示模态框
+    modalOverlay.style.display = "block"; // 显示遮罩层
+    console.log(user)
+    //填充学生信息
+    document.getElementById("sysUserName").value = user.sysUserName;
+    document.getElementById("sysPassWord").value = user.sysPassWord;
+    document.getElementById("id").value = user.id;
+  }
+  function openModal1() {
+    modal1.style.display = "block"; // 显示模态框
+    modalOverlay.style.display = "block"; // 显示遮罩层
+}
+
+  // 关闭模态框函数
+  function closeModal() {
+    modal.style.display = "none"; // 隐藏模态框
+    modalOverlay.style.display = "none"; // 隐藏遮罩层
+  }
+  function closeModal1() {
+    modal1.style.display = "none"; // 隐藏模态框
+    modalOverlay.style.display = "none"; // 隐藏遮罩层
+  }
+</script>
+</html>

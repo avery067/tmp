@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公告管理</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <div class="search-container">
+        <input type="text" id="name"  placeholder="Search..."> <button th:onclick="handleSearch()">搜索</button> <button th:onclick="openModal()">发布新公告</button>
+    </div>
+
+    <table border="1" class="table">
+        <tr>
+            <th>标题</th>
+            <th>内容</th>
+            <th>图片</th>
+            <th>发布时间</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="notice : ${notice.records}">
+            <td th:text="${notice.title}"></td>
+            <td th:text="${notice.content}"></td>
+            <td>
+                <img th:src="${ 'http://localhost:8080/api/file/view/'+notice.id}" style="width: 100px;height: 100px">
+            </td>
+            <td th:text="${#dates.format(notice.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td>
+                <a th:href="@{/notice/delete(id=${notice.id})}" th:text="删除" ></a>
+            </td>
+        </tr>
+    </table>
+
+    <div>
+        <ul class="pagination">
+            <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+            <li><a href="#" class="next" th:onclick="handleNext([[${notice.total}]])">下一页</a></li>
+        </ul>
+    </div>
+    <!-- 模态框遮罩层 -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+
+    <!-- 模态框内容 -->
+    <div class="modal" id="modal" style="display: none">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2>发布新公告</h2>
+        <form
+                action="/notice/add"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <div class="form-item">
+                <label for="title">标题:</label>
+                <input type="text" id="title" name="title">
+            </div>
+           <div class="form-item">
+               <label for="content">内容:</label>
+               <textarea id="content" name="content" >
+            </textarea>
+           </div>
+            <div class="form-item">
+                <label for="file">图片:</label>
+                <input type="file" id="file" name="file">
+            </div>
+           <div class="form-item">
+               <button type="submit">发布</button>
+           </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+<script >
+
+    function handleSearch(){
+        var name = document.getElementById("name").value;
+        window.location.href = "/notice/?pageSize=20&pageNum=1&name="+name;
+    }
+    function handlePrev(total) {
+        //获取URL参数中的pageNum
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        // total/20 得到共计多少页
+        if(pageNum>1){
+            window.location.href = "/notice/?pageSize=20&pageNum="+(pageNum-1);
+        }else{
+            alert("已经是第一页了")
+        }
+    }
+    function handleNext(total){
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        if(pageNum<total/20){
+            window.location.href = "/notice/?pageSize=20&pageNum="+(pageNum+1);
+        }else{
+            alert("已经是最后一页了")
+        }
+    }
+</script>
+<script>
+    // 获取模态框和遮罩层
+    var modal = document.getElementById("modal");
+    var modalOverlay = document.getElementById("modal-overlay");
+
+    // 打开模态框函数
+    function openModal(user) {
+        modal.style.display = "block"; // 显示模态框
+        modalOverlay.style.display = "block"; // 显示遮罩层
+        console.log(user)
+        //填充学生信息
+        document.getElementById("userName").value = user.userName;
+        document.getElementById("passWord").value = user.passWord;
+        document.getElementById("mobile").value = user.mobile;
+        document.getElementById("no").value = user.no;
+        document.getElementById("id").value = user.id;
+    }
+
+    // 关闭模态框函数
+    function closeModal() {
+        modal.style.display = "none"; // 隐藏模态框
+        modalOverlay.style.display = "none"; // 隐藏遮罩层
+    }
+</script>
+</html>

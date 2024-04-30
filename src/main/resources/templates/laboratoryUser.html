@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室预约管理</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <table border="1" class="table">
+        <tr>
+            <th>实验室名称</th>
+            <th>预约编号</th>
+            <th>预约用户</th>
+            <th>预约时间</th>
+            <th>状态</th>
+            <th>是否签到</th>
+            <th>签到时间</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="laboratory : ${list.data}">
+            <td th:text="${laboratory.name}"></td>
+            <td th:text="${laboratory.no}"></td>
+            <td th:text="${laboratory.userName}"></td>
+            <td th:text="${laboratory.createTime}"></td>
+            <td th:if="${laboratory.state == 0 }">等待审核</td>
+            <td th:if="${laboratory.state == 1 }">已通过</td>
+            <td th:if="${laboratory.state == 2 }">拒绝</td>
+            <td th:if="${laboratory.state == 3 }">已取消</td>
+            <td th:if="${laboratory.sign == 1 }">已签到</td>
+            <td th:if="${laboratory.sign == 0 }">未签到</td>
+            <th th:text="${laboratory.signTime}"></th>
+            <td th:if="${laboratory.state == 0 }">
+                <a th:href="@{/laboratory/user/audit(id=${laboratory.id},state=1)}" th:text="同意" ></a>
+                <a th:href="@{/laboratory/user/audit(id=${laboratory.id},state=2)}" th:text="拒绝" ></a>
+            </td>
+        </tr>
+    </table>
+
+    <div>
+        <ul class="pagination">
+            <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+            <li><a href="#" class="next" th:onclick="handleNext([[${list.total}]])">下一页</a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+<script>
+
+    function handlePrev() {
+        //获取URL参数中的pageNum
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        if(pageNum>1){
+            window.location.href = "/laboratory/user/?pageSize=20&pageNum="+(pageNum-1);
+        }else{
+            alert("已经是第一页了")
+        }
+    }
+    function handleNext(total){
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        if(pageNum<total/20){
+            window.location.href = "/laboratory/user/?pageSize=20&pageNum="+(pageNum+1);
+        }else{
+            alert("已经是最后一页了")
+        }
+    }
+</script>
+</html>

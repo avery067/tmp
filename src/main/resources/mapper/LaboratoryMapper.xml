@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.web.mapper.LaboratoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.web.entity.Laboratory">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="max" column="max" jdbcType="INTEGER"/>
+            <result property="img" column="img" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="statisPersons" resultMap="BaseResultMap">
+        select l.name ,
+               count(1) as max
+        from laboratory l left join laboratory_user lu on l.id = lu.laboratory_id
+        GROUP BY l.name
+    </select>
+    <select id="statisCurrent" resultMap="BaseResultMap">
+        select l.name ,
+               l.max - count(1) as max
+        from laboratory l left join laboratory_user lu on l.id = lu.laboratory_id
+        GROUP BY l.name,l.max
+    </select>
+    <sql id="Base_Column_List">
+        id,name,max,
+        img
+    </sql>
+</mapper>

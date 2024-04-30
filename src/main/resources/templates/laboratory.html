@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室列表</title>
+    <link rel="stylesheet" th:href="@{/css/menu.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body>
+<div th:replace="menu::menu"></div>
+<div class="main">
+    <div class="search-container">
+        <input type="text" id="name1"  placeholder="Search..."> <button th:onclick="handleSearch()">搜索</button><button th:onclick="openAddModal()">添加新实验室</button>
+    </div>
+
+    <table border="1" class="table">
+        <tr>
+            <th>实验室图片</th>
+            <th>实验室名称</th>
+            <th>最大容量</th>
+            <th>剩余容量</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="laboratory : ${laboratories.data}">
+            <td>
+                <img th:src="${ 'http://localhost:8080/api/file/view1/'+laboratory.id}" style="width: 100px;height: 100px">
+            </td>
+            <td th:text="${laboratory.name}"></td>
+            <td th:text="${laboratory.max}"></td>
+            <td th:text="${laboratory.current}"></td>
+            <td>
+                <a th:href="@{/laboratory/delete(id=${laboratory.id})}" th:text="删除" ></a>
+                <a href="#" th:onclick="openModal([[${laboratory}]])" th:inline="text">修改 </a>
+            </td>
+        </tr>
+    </table>
+
+    <div>
+        <ul class="pagination">
+            <li><a href="#" class="prev" th:onclick="handlePrev()">上一页</a></li>
+            <li><a href="#" class="next" th:onclick="handleNext([[${laboratories.total}]])">下一页</a></li>
+        </ul>
+    </div>
+
+    <!-- 模态框遮罩层 -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+
+    <!-- 模态框内容 -->
+    <div class="modal" id="modal" style="display: none">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2>修改实验室信息</h2>
+        <form
+                action="/laboratory/edit"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <div class="form-item">
+                <input type="hidden" id="id" name="id">
+                <label for="name">实验室名称:</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div class="form-item">
+                <label for="max">最大容量:</label>
+                <input type="text" id="max" name="max">
+            </div>
+            <div class="form-item">
+                <label for="file">图片:</label>
+                <input type="file" id="file" name="file">
+            </div>
+            <div class="form-item">
+                <button type="submit">提交修改</button>
+            </div>
+
+
+
+        </form>
+    </div>
+    <div class="modal" id="modal1" style="display: none">
+        <span class="close" onclick="closeModal1()">×</span>
+        <h2>添加实验室</h2>
+        <form
+                action="/laboratory/add"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <div class="form-item">
+                <label for="name">实验室名称:</label>
+                <input type="text"  name="name">
+            </div>
+            <div class="form-item">
+                <label for="max">最大容量:</label>
+                <input type="text"  name="max">
+            </div>
+            <div class="form-item">
+                <label for="file">图片:</label>
+                <input type="file" id="file" name="file">
+            </div>
+            <div class="form-item">
+                <button type="submit">提交新增</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+<script >
+
+    function handleSearch(){
+        var name = document.getElementById("name1").value;
+        window.location.href = "/laboratory/?pageSize=20&pageNum=1&name="+name;
+    }
+    function handlePrev(total) {
+        //获取URL参数中的pageNum
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        // total/20 得到共计多少页
+        if(pageNum>1){
+            window.location.href = "/laboratory/?pageSize=20&pageNum="+(pageNum-1);
+        }else{
+            alert("已经是第一页了")
+        }
+    }
+    function handleNext(total){
+        var pageNum = location.search.match(/pageNum=(\d+)/)[1];
+        if(pageNum<total/20){
+            window.location.href = "/laboratory/?pageSize=20&pageNum="+(pageNum+1);
+        }else{
+            alert("已经是最后一页了")
+        }
+    }
+</script>
+<script>
+    // 获取模态框和遮罩层
+    var modal = document.getElementById("modal");
+    var modal1 = document.getElementById("modal1");
+    var modalOverlay = document.getElementById("modal-overlay");
+
+    // 打开模态框函数
+    function openModal(laboratory) {
+        modal.style.display = "block"; // 显示模态框
+        modalOverlay.style.display = "block"; // 显示遮罩层
+        //填充实验室信息
+        document.getElementById("id").value = laboratory.id;
+        document.getElementById("name").value = laboratory.name;
+        document.getElementById("max").value = laboratory.max;
+    }
+    function openAddModal() {
+        modal1.style.display = "block"; // 显示模态框
+        modalOverlay.style.display = "block"; // 显示遮罩层
+    }
+
+    // 关闭模态框函数
+    function closeModal() {
+        modal.style.display = "none"; // 隐藏模态框
+        modalOverlay.style.display = "none"; // 隐藏遮罩层
+    }
+    function closeModal1() {
+        modal1.style.display = "none";
+        modalOverlay.style.display = "none";
+    }
+</script>
+</html>
