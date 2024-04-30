@@ -11,7 +11,7 @@
  Target Server Version : 80300
  File Encoding         : 65001
 
- Date: 30/04/2024 17:16:28
+ Date: 30/04/2024 17:31:18
 */
 
 SET NAMES utf8mb4;
@@ -31,6 +31,7 @@ CREATE TABLE `block`  (
 -- ----------------------------
 -- Records of block
 -- ----------------------------
+INSERT INTO `block` VALUES (1, 3, 2);
 
 -- ----------------------------
 -- Table structure for device

@@ -26,7 +26,9 @@
             </td>
             <td th:text="${device.name}"></td>
             <td th:text="${device.no}"></td>
-            <td th:text="${device.type}"></td>
+            <td th:if="${device.type ==1 }">老化</td>
+            <td th:if="${device.type ==2 }">腐蚀</td>
+            <td th:if="${device.type ==3 }">磨损</td>
             <td th:text="${device.remark}"></td>
             <td th:text="${device.userName}"></td>
             <td th:text="${device.note}"></td>

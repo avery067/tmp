@@ -45,6 +45,7 @@ public class LockCtrl {
             LockVo tmp = new LockVo();
             BeanUtils.copyProperties(lock,tmp);
             tmp.setUserName(userService.getById(lock.getUserId()).getUserName());
+            vos.add(tmp);
         });
         vo.setData(vos);
         view.addObject("locks",vo);

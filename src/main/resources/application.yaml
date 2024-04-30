@@ -13,3 +13,6 @@ spring:
     mode: HTML5
     servlet:
       content-type: text/html
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

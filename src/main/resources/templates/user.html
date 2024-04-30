@@ -16,12 +16,20 @@
         <tr>
             <th>用户名</th>
             <th>密码</th>
+            <th>性别</th>
+            <th>身份</th>
+            <th>学校</th>
             <th>手机号</th>
             <th>学号</th>
             <th>操作</th>
         </tr>
         <tr th:each="user : ${users.records}">
             <td th:text="${user.userName}"></td>
+            <td th:if="${user.sex==1}">男</td>
+            <td th:if="${user.sex==2}">女</td>
+            <td th:if="${user.type==1}">学生</td>
+            <td th:if="${user.type==2}">教师</td>
+            <td th:text="${user.school}"></td>
             <td th:text="${user.passWord}"></td>
             <td th:text="${user.mobile}"></td>
             <td th:text="${user.no}"></td>
